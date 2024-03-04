@@ -1,0 +1,15 @@
+{
+  "name": "module1",
+  "version": "1.0.0",
+  "description": "module 1",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "nodemon index.js"
+  },
+  "author": "heorhii okarskyi",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
