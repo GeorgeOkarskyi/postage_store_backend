@@ -44,7 +44,7 @@ function logProcessDetailsPeriodically() {
         }
 
         process.stdout.write("\r");
-        // process.stdout.write(stdout.trim());
+        process.stdout.write(stdout.trim());
 
         if (!this.lastLogged || Date.now() - this.lastLogged >= 60000) {
             logData(stdout.trim());
