@@ -4,12 +4,18 @@
   "description": "Practical task for EventEmmiter & Buffer & Streams",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start:all": "nodemon task1.mjs & nodemon task2.mjs & nodemon task3.mjs",
+    "task1": "nodemon task1.mjs",
+    "task2": "nodemon task2.mjs",
+    "task3": "nodemon task3.mjs"
   },
+  "type": "module",
   "author": "heorhii okarskyi",
   "license": "ISC",
   "dependencies": {
+    "csvtojson": "^2.0.10",
     "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
     "nodemon": "^3.1.0"
   }
 }
