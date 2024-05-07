@@ -4,7 +4,8 @@
   "description": "Testing in Node.js",
   "main": "",
   "scripts": {
-    "test": "jest",
+    "test": "jest --config=jest.config.js",
+    "test:e2e": "jest --config=jest.config.js --testPathPattern='./src/e2e-public-holidays-api-test.ts",
     "test:coverage": "jest --coverage"
   },
   "author": "heorhii okarskyi",
