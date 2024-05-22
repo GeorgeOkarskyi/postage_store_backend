@@ -1,0 +1,16 @@
+{
+  "name": "module5",
+  "version": "1.0.0",
+  "description": "module5 Network lesson Practical task",
+  "main": "server.js",
+  "scripts": {
+    "start": "./node_modules/.bin/pm2 start ./server.js --name ngmp-network-app",
+    "stop": "./node_modules/.bin/pm2 stop ngmp-network-app"
+  },
+  "author": "heorhii okarskyi",
+  "license": "ISC",
+  "dependencies": {
+    "pm2": "^5.3.1",
+    "uuid": "^9.0.1"
+  }
+}
