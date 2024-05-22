@@ -1,15 +1,25 @@
 import Joi from 'joi';
-import path from 'path';
 
 const UPDATE_USER_CART_REQUEST_SCHEMA = Joi.object({
     productId: Joi.string().guid({ version: 'uuidv4' }).required(),
     count: Joi.number().integer().positive().required()
 });
 
-export const VALIDATION_MAP = {
-    'PUT /api/profile/cart': UPDATE_USER_CART_REQUEST_SCHEMA
-};
+const CHECKOUT_USER_CART_REQUEST_SCHEMA = Joi.object({
+    payment: Joi.object({
+      type: Joi.string().required(),
+      address: Joi.alternatives().try(Joi.any(), Joi.allow(null)).optional(),
+      creditCard: Joi.alternatives().try(Joi.any(), Joi.allow(null)).optional(),
+    }).required(),
+    delivery: Joi.object({
+      type: Joi.string().required(),
+      address: Joi.any().required(),
+    }).required(),
+    comments: Joi.string().required(),
+    status: Joi.string().valid('created', 'completed').required(),
+  });
 
-export const PRODUCT_CSV_FILE_PATH = path.join(__dirname, './storage/products.csv');
-export const CART_CSV_FILE_PATH = path.join(__dirname, './storage/cart.csv');
-export const CART_ITEMS_CSV_FILE_PATH = path.join(__dirname, './storage/cartItems.csv');
+export const VALIDATION_MAP = {
+    'PUT /api/profile/cart': UPDATE_USER_CART_REQUEST_SCHEMA,
+    'POST /api/profile/cart': CHECKOUT_USER_CART_REQUEST_SCHEMA
+};

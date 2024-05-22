@@ -1,4 +1,5 @@
 import { CartEntity, CartItemEntity } from "../models/cart.entity";
+import { Delivery, ORDER_STATUS, OrderEntity, Payment } from "../models/order.entity";
 import { DeleteResponce } from "../models/responce.entity";
 import { ProductDAL } from "../products/products.repository";
 import { CartDAL } from "./cart.repository";
@@ -32,6 +33,12 @@ class CartService {
         const updateUserCartResponce = await this.cartDAL.emptyUserCart(userId);
 
         return updateUserCartResponce;
+    }
+
+    async chackoutUserCart(userId: string, { payment, delivery, comments, status }: { payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS }): Promise<OrderEntity>{
+        const checkoutUserCartResponse = await this.cartDAL.chackoutUserCart(userId, payment, delivery, comments, status);
+        
+        return checkoutUserCartResponse;
     }
 }
 

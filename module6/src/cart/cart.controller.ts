@@ -38,9 +38,13 @@ class CartController {
         }
     }
 
-    public chackoutUserCart({ body }: Request, res: Response, next: NextFunction) {
+    public async chackoutUserCart({ headers, body }: Request, res: Response, next: NextFunction) {
         try {
-            res.send('chackoutUserCart');
+            const userId = headers[USER_ID_HEADER_KEY] as string;
+
+            const chackoutUserCartResponse = await CartService.chackoutUserCart(userId, body);
+
+            res.send(new ResponseDTO({ data: chackoutUserCartResponse }));
         } catch (error) {
             return next(error);
         }

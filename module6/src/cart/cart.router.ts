@@ -9,4 +9,4 @@ const { requestUserCart, updateUserCart, emptyUserCart, chackoutUserCart } = Car
 cartRouter.get('/', requestUserCart);
 cartRouter.put('/', validatRequestBody, updateUserCart);
 cartRouter.delete('/', emptyUserCart);
-cartRouter.post('/checkout',chackoutUserCart);
+cartRouter.post('/checkout', validatRequestBody,chackoutUserCart);

@@ -1,14 +1,14 @@
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { CartEntity, CartItemEntity } from "../models/cart.entity";
-import { addItemCsv, deleteItemFromCsv, findItemsInCsv, updateCsv } from '../joi/joi';
+import { addItemCsv, deleteItemFromCsv, findItemsInCsv, updateCsv } from '../storage/storage';
 import { ProductEntity } from '../models/product.entity';
-import { CartItemStorage, CartStorage } from '../joi/storage/storage.entities';
+import { CartItemStorage, CartStorage } from '../storage/storage.entities';
 import { ProductDAL } from '../products/products.repository';
 import { DeleteResponce } from '../models/responce.entity';
 import { ExpressError } from '../models/error.entity';
 import { NO_ITEMS_IN_CART_FOUND_MESSAGE, ServerResponseCodes } from '../constants';
-import { CART_CSV_FILE_PATH, CART_ITEMS_CSV_FILE_PATH } from '../joi/joi.constants';
+import { CART_CSV_FILE_PATH, CART_ITEMS_CSV_FILE_PATH, ORDERS_CSV_FILE_PATH } from '../storage/storage.constants';
+import { Delivery, ORDER_STATUS, OrderEntity, Payment } from '../models/order.entity';
 export class CartDAL {
     private productDAL: ProductDAL;
 
@@ -25,16 +25,19 @@ export class CartDAL {
 
         const cartItemsResponce = (await findItemsInCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, (cartItem) => cartItem.cartId === cart.id));
 
-
         const cartItems = await Promise.all(cartItemsResponce
             .map(async (cartItem: CartItemStorage) => {
                 const productResponce = await this.productDAL.getProduct(cartItem.productId);
 
                 return new CartItemEntity({...cartItem, product: new ProductEntity(productResponce)});
             }
-        )) 
+        )); 
 
-        return new CartEntity({ ...cart, items: cartItems});
+        const total = cartItems.reduce((acc, { product, count }) => {
+            return acc + (product.price * count);
+        }, 0);
+
+        return new CartEntity({ ...cart, items: cartItems, total});
     }
 
     async createUserCart(userId: string): Promise<CartEntity> {
@@ -80,20 +83,28 @@ export class CartDAL {
 
     async emptyUserCart(userId: string): Promise<DeleteResponce> {
         const userCart = await this.getUserCart(userId);
-        const userCartId = userCart.id;
-
-        const userItemsToDelete = await findItemsInCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, (item) => {
-            return item.cartId === userCartId;
-        });
+        const userItemsToDelete = userCart.items;
 
         if(!userItemsToDelete.length) {
             throw new ExpressError( {message: NO_ITEMS_IN_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
-        userItemsToDelete.forEach(async (itemToDelete: CartItemStorage) => {
-            await deleteItemFromCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, itemToDelete.id)
-        });
+        for (const itemToDelete of userItemsToDelete) {
+            await deleteItemFromCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, itemToDelete.product.id);
+        }
 
         return new DeleteResponce({ success: true });
+    }
+
+    async chackoutUserCart(userId: string, payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS): Promise<OrderEntity>{
+        const { id: cartId, items, total } = await this.getUserCart(userId);
+
+        const newOrder = new OrderEntity({ id: uuidv4(), userId, cartId, items, payment, delivery, comments, status, total});
+
+        await addItemCsv<OrderEntity>(ORDERS_CSV_FILE_PATH, newOrder);
+
+        await this.emptyUserCart(userId);
+        
+        return newOrder
     }
 }

@@ -1,8 +1,8 @@
 import { ProductEntity } from '../models/product.entity';
-import { findItemsInCsv, getItemsFromCsv } from '../joi/joi';
+import { findItemsInCsv, getItemsFromCsv } from '../storage/storage';
 import { ExpressError } from '../models/error.entity';
 import { ServerResponseCodes, NO_PRODUCT_FOUND_MESSAGE} from '../constants';
-import { PRODUCT_CSV_FILE_PATH } from '../joi/joi.constants';
+import { PRODUCT_CSV_FILE_PATH } from '../storage/storage.constants';
 
 export class ProductDAL {
     async getProducts(): Promise<ProductEntity[]> {
