@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { CartEntity, CartItemEntity } from "../models/cart.entity";
 import { ProductEntity } from '../models/product.entity';
 import { ProductDAL } from '../products/products.repository';
