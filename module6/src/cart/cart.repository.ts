@@ -1,14 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CartEntity, CartItemEntity } from "../models/cart.entity";
-import { addItemCsv, deleteItemFromCsv, findItemsInCsv, updateCsv } from '../storage/storage';
 import { ProductEntity } from '../models/product.entity';
-import { CartItemStorage, CartStorage } from '../storage/storage.entities';
 import { ProductDAL } from '../products/products.repository';
 import { DeleteResponce } from '../models/responce.entity';
 import { ExpressError } from '../models/error.entity';
 import { NO_ITEMS_IN_CART_FOUND_MESSAGE, ServerResponseCodes } from '../constants';
-import { CART_CSV_FILE_PATH, CART_ITEMS_CSV_FILE_PATH, ORDERS_CSV_FILE_PATH } from '../storage/storage.constants';
 import { Delivery, ORDER_STATUS, OrderEntity, Payment } from '../models/order.entity';
+import Cart from '../database/models/cart';
+import CartItem, { ICartItem } from '../database/models/cartItem';
+import Product from '../database/models/product';
+import Order from '../database/models/order';
 export class CartDAL {
     private productDAL: ProductDAL;
 
@@ -17,65 +18,56 @@ export class CartDAL {
     }
 
     async getUserCart(userId: string): Promise<CartEntity> {
-        const cart = (await findItemsInCsv<CartStorage>(CART_CSV_FILE_PATH, (cart) => cart.userId === userId))[0];
+        const cart = await Cart.findOne({userId}).lean();
 
         if(!cart) {
             return null;
         }
 
-        const cartItemsResponce = (await findItemsInCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, (cartItem) => cartItem.cartId === cart.id));
+        const cartItemsResponce: ICartItem[] = await CartItem.find({cartId: cart._id});
+
 
         const cartItems = await Promise.all(cartItemsResponce
-            .map(async (cartItem: CartItemStorage) => {
-                const productResponce = await this.productDAL.getProduct(cartItem.productId);
+            .map(async ({productId, count}: ICartItem) => {
+                const productResponce = await Product.findById(productId).lean();
 
-                return new CartItemEntity({...cartItem, product: new ProductEntity(productResponce)});
+                return new CartItemEntity({count: count, product: new ProductEntity({...productResponce, id: productResponce._id as string})});
             }
-        )); 
+        ));
 
         const total = cartItems.reduce((acc, { product, count }) => {
             return acc + (product.price * count);
         }, 0);
 
-        return new CartEntity({ ...cart, items: cartItems, total});
+        return new CartEntity({ ...cart, id: cart._id as string, items: cartItems, total});
     }
 
     async createUserCart(userId: string): Promise<CartEntity> {
-        const newCart = new CartStorage({ id: uuidv4(), userId: userId, isDeleted: false });
+        const newCart = new Cart({ userId: userId, isDeleted: false });
 
-        const createUserCartResponce: CartStorage = await addItemCsv<CartStorage>(
-            CART_CSV_FILE_PATH, 
-            newCart
-        );
+        const savedCart = (await newCart.save()).toObject();
 
-        return new CartEntity({...createUserCartResponce, items: []});
+        return new CartEntity({...savedCart, id: savedCart._id as string, items: []});
     }
 
     async updateUserCart(userId: string, product: { productId: string, count: number }): Promise<CartEntity> {
-        const userCart = await this.getUserCart(userId);
-        const userCartId = userCart.id;
+        const { id: userCartId } = await this.getUserCart(userId);
 
         if(!product.count){
-            await deleteItemFromCsv(CART_ITEMS_CSV_FILE_PATH, product.productId);
+            await CartItem.deleteOne({productId: product.productId})
 
             return await this.getUserCart(userId);
         }
 
-        const isItemExistInCart = (await findItemsInCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, (item) => {
-            return item.cartId === userCartId && item.productId === product.productId
-        })).length
+        const isItemExistInCart = (await CartItem.find({ cartId: userCartId, productId: product.productId })).length;
 
 
         if(isItemExistInCart) {
-            await updateCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, item => {
-                if(item.cartId === userCartId && item.productId === product.productId) {
-                    return {...item, count: product.count};
-                }
-
-                return item;
-            });
+            await CartItem.updateOne({ cartId: userCartId, productId: product.productId }, 
+                { $set: { count: product.count } });
         } else {
-            await addItemCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, new CartItemStorage({id: product.productId, cartId: userCartId, productId: product.productId, count: product.count}));
+            const cartItem = new CartItem({ cartId: userCartId, productId: product.productId, count: product.count});
+            await cartItem.save();
         }
 
         return await this.getUserCart(userId);
@@ -83,14 +75,11 @@ export class CartDAL {
 
     async emptyUserCart(userId: string): Promise<DeleteResponce> {
         const userCart = await this.getUserCart(userId);
-        const userItemsToDelete = userCart.items;
 
-        if(!userItemsToDelete.length) {
+        const { deletedCount } = await CartItem.deleteMany({cartId: userCart.id}); 
+
+        if(!deletedCount) {
             throw new ExpressError( {message: NO_ITEMS_IN_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
-        }
-
-        for (const itemToDelete of userItemsToDelete) {
-            await deleteItemFromCsv<CartItemStorage>(CART_ITEMS_CSV_FILE_PATH, itemToDelete.product.id);
         }
 
         return new DeleteResponce({ success: true });
@@ -99,12 +88,19 @@ export class CartDAL {
     async chackoutUserCart(userId: string, payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS): Promise<OrderEntity>{
         const { id: cartId, items, total } = await this.getUserCart(userId);
 
-        const newOrder = new OrderEntity({ id: uuidv4(), userId, cartId, items, payment, delivery, comments, status, total});
+        const newOrder = new Order({userId, 
+            cartId, 
+            items: items.map((item) => new CartItem({ cartId: cartId, productId: item.product.id, count: item.count})), 
+            payment, 
+            delivery, 
+            comments, 
+            status, 
+            total});
 
-        await addItemCsv<OrderEntity>(ORDERS_CSV_FILE_PATH, newOrder);
+        const newOrderResponse = (await newOrder.save()).toObject();
 
         await this.emptyUserCart(userId);
-        
-        return newOrder
+
+        return new OrderEntity({...newOrderResponse, items, id: newOrderResponse._id as string}) 
     }
 }
