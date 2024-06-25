@@ -35,8 +35,8 @@ interface IPaymentParams {
 
 export class Payment {
   public type: string;
-  public address: any;
-  public creditCard: any;
+  public address?: any;
+  public creditCard?: any;
 
   constructor({type, address, creditCard}: IPaymentParams) {
     this.type = type;

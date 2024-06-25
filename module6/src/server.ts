@@ -1,3 +1,4 @@
+import './database/database';
 import express from 'express';
 import { authenticate } from './middlewares/authenticate.middleware';
 import { SERVER_STARTED_MESSAGE } from './constants';
