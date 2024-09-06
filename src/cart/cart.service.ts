@@ -29,11 +29,11 @@ class CartService {
         return updateUserCartResponce
     }
 
-    // async emptyUserCart(userId: string): Promise<DeleteResponce>{
-    //     const updateUserCartResponce = await this.cartDAL.emptyUserCart(userId);
+    async emptyUserCart(userId: string): Promise<DeleteResponce>{
+        const updateUserCartResponce = await this.cartDAL.emptyUserCart(userId);
 
-    //     return updateUserCartResponce;
-    // }
+        return updateUserCartResponce;
+    }
 
     // async chackoutUserCart(userId: string, { payment, delivery, comments, status }: { payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS }): Promise<OrderEntity>{
     //     const checkoutUserCartResponse = await this.cartDAL.chackoutUserCart(userId, payment, delivery, comments, status);
