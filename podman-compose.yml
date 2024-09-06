@@ -1,0 +1,12 @@
+version: '3'
+services:
+  postgres-db:
+    image: "postgres:12"
+    container_name: "node-gmp-db"
+    environment:
+      - POSTGRES_USER=${MIKRO_ORM_USER}
+      - POSTGRES_PASSWORD=${MIKRO_ORM_PASSWORD}
+      - POSTGRES_DB=${MIKRO_ORM_DB_NAME}
+    restart: always
+    ports:
+      - '5432:5432'
