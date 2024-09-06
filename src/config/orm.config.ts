@@ -1,7 +1,7 @@
 import { Options, SqliteDriver } from '@mikro-orm/sqlite';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { SeedManager } from '@mikro-orm/seeder';
-import { Migrator } from '@mikro-orm/migrations';
+import { Migrator, TSMigrationGenerator } from '@mikro-orm/migrations';
 
 const config: Options = {
   driver: SqliteDriver,
@@ -10,7 +10,7 @@ const config: Options = {
   entitiesTs: ['src/database/**/*.entity.ts'],
   migrations: {
     path: './dist/database/migrations',
-    pathTs: './src/database/migrations'
+    pathTs: './src/database/migrations',
   },
   seeder: {
     pathTs: './src/database/seedings',

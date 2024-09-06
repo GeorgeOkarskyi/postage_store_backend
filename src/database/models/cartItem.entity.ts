@@ -9,7 +9,7 @@ export class CartItem {
   @PrimaryKey({ type: 'uuid' })
   id: string = uuidv4();
 
-  @ManyToOne(() => Product, { ref: true})
+  @ManyToOne(() => Product)
   product!: Product;
 
   @ManyToOne(() => Cart )
