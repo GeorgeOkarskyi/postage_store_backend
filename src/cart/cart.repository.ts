@@ -1,14 +1,9 @@
 import { CartEntity, CartItemEntity } from "../models/cart.entity";
-// import { ProductEntity } from '../models/product.entity';
 import { ProductDAL } from '../products/products.repository';
-// import { DeleteResponce } from '../models/responce.entity';
-// import { ExpressError } from '../models/error.entity';
-// import { NO_ITEMS_IN_CART_FOUND_MESSAGE, ServerResponseCodes } from '../constants';
-// import { Delivery, ORDER_STATUS, OrderEntity, Payment } from '../models/order.entity';
 import { DI } from '../server';
-
 import { Cart } from '../database/models/cart.entity';
 import { CartItem } from "../database/models/cartItem.entity";
+import { getCartTotal } from "./cart.utils";
 export class CartDAL {
     private productDAL: ProductDAL;
 
@@ -25,15 +20,13 @@ export class CartDAL {
             return;
         }
 
-        const cartItems = cart.items?.getItems().map((item) => {
-            return new CartItemEntity({...item, cartId: cart.id})
-        });
+        const cartItems = cart.items?.getItems();
+    
+        const cartTotal = getCartTotal(cartItems);
+        
+        const cartItemsEntity = cartItems.map((item) => new CartItemEntity({...item, cartId: cart.id}));
 
-        const totalCountOfItems = cartItems?.reduce((acc, curr) => {
-            return acc + (curr.count * curr.product.price);
-        }, 0) || 0;
-
-        return new CartEntity({ ...cart, items: cartItems, total: totalCountOfItems });
+        return new CartEntity({ ...cart, items: cartItemsEntity, total: cartTotal });
     }
 
     async createUserCart(userId: string): Promise<CartEntity> {
@@ -71,18 +64,17 @@ export class CartDAL {
             cart.items.add(cartItem);
         }
 
-        const totalCountOfItems = cart.items.getItems().reduce((acc, curr) => {
-            return acc + (curr.count * curr.product.price);
-        }, 0) || 0;
+        const cartItems = cart.items?.getItems();
 
+        const cartTotal = getCartTotal(cartItems);
 
-        cart.total = totalCountOfItems;
+        cart.total = cartTotal;
 
-        const cartItems = cart.items?.getItems().map((item) => {
-            return new CartItemEntity({...item, cartId: cart.id})
-        });
+        await DI.em.flush();
 
-        return new CartEntity({ ...cart, items: cartItems, total: totalCountOfItems });
+        const cartItemsEntity = cartItems.map((item) => new CartItemEntity({...item, cartId: cart.id}));
+
+        return new CartEntity({ ...cart, items: cartItemsEntity });
     }
 
     // async emptyUserCart(userId: string): Promise<DeleteResponce> {

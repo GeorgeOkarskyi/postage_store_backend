@@ -6,7 +6,10 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node dist/server",
-    "start:dev": "tsc-watch --onSuccess \"node dist/server\""
+    "start:dev": "tsc-watch --onSuccess \"node dist/server\"",
+    "migration:create": "npx mikro-orm migration:create",
+    "migration:up": "npx mikro-orm migration:up",
+    "seeder:run-product": "npx mikro-orm seeder:run --class=ProductSeeder"
   },
   "keywords": [],
   "author": "heorhii okarskyi",
