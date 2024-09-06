@@ -4,9 +4,9 @@ import { validatRequestBody } from '../middlewares/validation.middleware'
 
 export const cartRouter = Router();
 
-const { requestUserCart, updateUserCart } = CartController;
+const { requestUserCart, updateUserCart, emptyUserCart } = CartController;
 
 cartRouter.get('/', requestUserCart);
 cartRouter.put('/', validatRequestBody, updateUserCart);
-// cartRouter.delete('/', emptyUserCart);
+cartRouter.delete('/', emptyUserCart);
 // cartRouter.post('/checkout', validatRequestBody,chackoutUserCart);

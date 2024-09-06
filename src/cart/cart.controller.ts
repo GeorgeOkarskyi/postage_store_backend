@@ -26,17 +26,17 @@ class CartController {
         }
     }
 
-    // public async emptyUserCart({ headers }: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const userId = headers[USER_ID_HEADER_KEY] as string;
+    public async emptyUserCart({ headers }: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = headers[USER_ID_HEADER_KEY] as string;
 
-    //         const emptyUserCartResponce = await CartService.emptyUserCart(userId);
+            const emptyUserCartResponce = await CartService.emptyUserCart(userId);
 
-    //         res.send(new ResponseDTO({ data: emptyUserCartResponce }));
-    //     } catch (error) {
-    //         return next(error);
-    //     }
-    // }
+            res.send(new ResponseDTO({ data: emptyUserCartResponce }));
+        } catch (error) {
+            return next(error);
+        }
+    }
 
     // public async chackoutUserCart({ headers, body }: Request, res: Response, next: NextFunction) {
     //     try {

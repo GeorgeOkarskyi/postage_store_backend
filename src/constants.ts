@@ -17,3 +17,4 @@ export const BAD_REQUEST_MESSAGE = 'Bad request';
 export const NO_PRODUCT_FOUND_MESSAGE = 'No product with such id';
 export const NO_ITEMS_IN_CART_FOUND_MESSAGE = 'No items in the cart were found';
 export const SERVER_STARTED_MESSAGE = 'Server is running on port:';
+export const NO_CART_FOUND_MESSAGE = 'Cart not found';

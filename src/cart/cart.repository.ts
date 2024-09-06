@@ -4,6 +4,9 @@ import { DI } from '../server';
 import { Cart } from '../database/models/cart.entity';
 import { CartItem } from "../database/models/cartItem.entity";
 import { getCartTotal } from "./cart.utils";
+import { ExpressError } from "../models/error.entity";
+import { DeleteResponce } from "../models/responce.entity"
+import { NO_ITEMS_IN_CART_FOUND_MESSAGE, NO_PRODUCT_FOUND_MESSAGE, NO_CART_FOUND_MESSAGE, ServerResponseCodes } from "../constants"
 export class CartDAL {
     private productDAL: ProductDAL;
 
@@ -12,7 +15,7 @@ export class CartDAL {
     }
 
     async getUserCart(userId: string): Promise<CartEntity | void> {
-        const cart = await DI.cart.findOne({ userId: userId}, {
+        const cart = await DI.cart.findOne({ userId: userId, isDeleted: false}, {
             populate: ['items.product'],
         });
 
@@ -39,19 +42,19 @@ export class CartDAL {
     }
 
     async updateUserCart(userId: string, product: { productId: string, count: number }): Promise<CartEntity> {
-        const cart = await DI.cart.findOne({ userId: userId}, {
+        const cart = await DI.cart.findOne({ userId: userId, isDeleted: false}, {
             populate: ['items.product'],
         });
 
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new ExpressError( {message: NO_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
         
         const productItem =  await DI.product.findOne({ id: product.productId });
 
         if (!productItem) {
-            throw new Error('Product not found');
+            throw new ExpressError( {message: NO_PRODUCT_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
 
@@ -77,17 +80,25 @@ export class CartDAL {
         return new CartEntity({ ...cart, items: cartItemsEntity });
     }
 
-    // async emptyUserCart(userId: string): Promise<DeleteResponce> {
-    //     const userCart = await this.getUserCart(userId);
+    async emptyUserCart(userId: string): Promise<DeleteResponce> {
+        const cart = await DI.cart.findOne({ userId: userId, isDeleted: false}, {
+            populate: ['items'],
+        });
 
-    //     const { deletedCount } = await CartItem.deleteMany({cartId: userCart.id}); 
+        if(!cart){
+            throw new ExpressError( {message: NO_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
+        }
 
-    //     if(!deletedCount) {
-    //         throw new ExpressError( {message: NO_ITEMS_IN_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
-    //     }
+        if(!cart.items.length) {
+            throw new ExpressError( {message: NO_ITEMS_IN_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
+        }
 
-    //     return new DeleteResponce({ success: true });
-    // }
+        cart.isDeleted = true;
+
+        await DI.em.flush();
+
+        return new DeleteResponce({ success: true });
+    }
 
     // async chackoutUserCart(userId: string, payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS): Promise<OrderEntity>{
     //     const { id: cartId, items, total } = await this.getUserCart(userId);
