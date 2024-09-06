@@ -15,16 +15,16 @@ class CartController {
         }
     }
 
-    // public async updateUserCart({ body, headers }: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const userId = headers[USER_ID_HEADER_KEY] as string;
-    //         const updateUserCartResponce = await CartService.updateUserCart(userId, body)
+    public async updateUserCart({ body, headers }: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = headers[USER_ID_HEADER_KEY] as string;
+            const updateUserCartResponce = await CartService.updateUserCart(userId, body)
 
-    //         res.send(new ResponseDTO({ data: updateUserCartResponce }));
-    //     } catch (error) {
-    //         return next(error);
-    //     }
-    // }
+            res.send(new ResponseDTO({ data: updateUserCartResponce }));
+        } catch (error) {
+            return next(error);
+        }
+    }
 
     // public async emptyUserCart({ headers }: Request, res: Response, next: NextFunction) {
     //     try {

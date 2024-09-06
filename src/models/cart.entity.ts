@@ -25,7 +25,7 @@ interface ICartEntity {
   id: string;
   userId: string;
   isDeleted: boolean | string;
-  items: CartItemEntity[];
+  items: CartItemEntity[] | undefined;
   total: number;
 }
 
@@ -33,7 +33,7 @@ export class CartEntity {
   public id: string;
   public userId: string;
   public isDeleted: boolean | string;
-  public items: CartItemEntity[];
+  public items: CartItemEntity[] | undefined;
   public total: number;
 
   constructor({id, userId, isDeleted, items, total}: ICartEntity){

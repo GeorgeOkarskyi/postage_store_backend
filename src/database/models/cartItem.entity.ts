@@ -1,4 +1,4 @@
-import { PrimaryKey, ManyToOne, Property, Entity, Ref, ManyToMany } from "@mikro-orm/core";
+import { PrimaryKey, ManyToOne, Property, Entity, Ref, OneToOne } from "@mikro-orm/core";
 import { v4 as uuidv4 } from 'uuid';
 import { Cart } from './cart.entity';
 import { Product } from './product.entity'
@@ -9,20 +9,22 @@ export class CartItem {
   @PrimaryKey({ type: 'uuid' })
   id: string = uuidv4();
 
-  @ManyToOne(() => Product, {primary: true, ref: true})
-  product!: Ref<Product>;
+  @ManyToOne(() => Product, { ref: true})
+  product!: Product;
 
   @ManyToOne(() => Cart )
   cart!: Cart;
 
-  @ManyToOne(() => Order )
-  order!: Order;
+  @ManyToOne(() => Order, { nullable: true })
+  order?: Order;
 
   @Property()
   count!: number;
 
-  constructor(count: number, cart: Cart) {
+  constructor(count: number, cart: Cart, product: Product, order?: Order) {
     this.count = count;
     this.cart = cart;
+    this.product = product;
+    this.order = order;
   }
 }

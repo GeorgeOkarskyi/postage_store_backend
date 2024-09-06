@@ -8,7 +8,7 @@ import { ProductDAL } from '../products/products.repository';
 import { DI } from '../server';
 
 import { Cart } from '../database/models/cart.entity';
-
+import { CartItem } from "../database/models/cartItem.entity";
 export class CartDAL {
     private productDAL: ProductDAL;
 
@@ -17,62 +17,73 @@ export class CartDAL {
     }
 
     async getUserCart(userId: string): Promise<CartEntity | void> {
-
-        const carts = await DI.cart.findAll();
-        console.log(carts);
-
         const cart = await DI.cart.findOne({ userId: userId}, {
             populate: ['items.product'],
         });
-
-        console.log('||||||||Cart found:', cart);
 
         if(cart === null) {
             return;
         }
 
-        await cart?.items?.loadItems();
+        const cartItems = cart.items?.getItems().map((item) => {
+            return new CartItemEntity({...item, cartId: cart.id})
+        });
 
+        const totalCountOfItems = cartItems?.reduce((acc, curr) => {
+            return acc + (curr.count * curr.product.price);
+        }, 0) || 0;
 
-        console.log('||||||||Cart found:', cart);
-        
-
-        // new CartItemEntity({product: {id: '21343', title: 'sds', description: 'description', price: 23}, id: '1234', cartId: 'dsf', count: 34})
-
-        return new CartEntity({ ...cart, items: [ new CartItemEntity({product: {id: '21343', title: 'sds', description: 'description', price: 23}, id: '1234', cartId: 'dsf', count: 34})], total: 9 });
+        return new CartEntity({ ...cart, items: cartItems, total: totalCountOfItems });
     }
 
     async createUserCart(userId: string): Promise<CartEntity> {
 
         const newCart = new Cart({ userId: userId, isDeleted: false, total: 0 });
 
-        // await DI.cart.persistAndFlush(newCart);
+        await DI.em.persistAndFlush(newCart);
 
         return new CartEntity({...newCart, items: []});
     }
 
-    // async updateUserCart(userId: string, product: { productId: string, count: number }): Promise<CartEntity> {
-    //     const { id: userCartId } = await this.getUserCart(userId);
+    async updateUserCart(userId: string, product: { productId: string, count: number }): Promise<CartEntity> {
+        const cart = await DI.cart.findOne({ userId: userId}, {
+            populate: ['items.product'],
+        });
 
-    //     if(!product.count){
-    //         await CartItem.deleteOne({productId: product.productId})
+        if (!cart) {
+            throw new Error('Cart not found');
+        }
 
-    //         return await this.getUserCart(userId);
-    //     }
+        
+        const productItem =  await DI.product.findOne({ id: product.productId });
 
-    //     const isItemExistInCart = (await CartItem.find({ cartId: userCartId, productId: product.productId })).length;
+        if (!productItem) {
+            throw new Error('Product not found');
+        }
 
 
-    //     if(isItemExistInCart) {
-    //         await CartItem.updateOne({ cartId: userCartId, productId: product.productId }, 
-    //             { $set: { count: product.count } });
-    //     } else {
-    //         const cartItem = new CartItem({ cartId: userCartId, productId: product.productId, count: product.count});
-    //         await cartItem.save();
-    //     }
+        let cartItem = cart?.items.getItems().find((item) => item.product.id === product.productId);
 
-    //     return await this.getUserCart(userId);
-    // }
+        if (cartItem) {
+            cartItem.count += product.count;
+        } else {
+            cartItem = new CartItem(product.count, cart, productItem);
+            cart.items.add(cartItem);
+        }
+
+        const totalCountOfItems = cart.items.getItems().reduce((acc, curr) => {
+            return acc + (curr.count * curr.product.price);
+        }, 0) || 0;
+
+
+        cart.total = totalCountOfItems;
+
+        const cartItems = cart.items?.getItems().map((item) => {
+            return new CartItemEntity({...item, cartId: cart.id})
+        });
+
+        return new CartEntity({ ...cart, items: cartItems, total: totalCountOfItems });
+    }
 
     // async emptyUserCart(userId: string): Promise<DeleteResponce> {
     //     const userCart = await this.getUserCart(userId);

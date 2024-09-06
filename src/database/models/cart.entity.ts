@@ -16,8 +16,8 @@ export class Cart {
     @Property()
     total!: number;
 
-    @OneToMany(() => CartItem, item => item.cart, {nullable: true})
-    items?: Collection<CartItem> = new Collection<CartItem>(this);
+    @OneToMany(() => CartItem, item => item.cart)
+    items = new Collection<CartItem>(this);
 
     constructor({ userId, isDeleted, total }: { userId: string, isDeleted: boolean, total: number }) {
         this.userId = userId;

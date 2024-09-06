@@ -1,8 +1,7 @@
 import Joi, { ObjectSchema } from 'joi';
-import { objectIdJoi } from './joi.objectId';
 
 const UPDATE_USER_CART_REQUEST_SCHEMA = Joi.object({
-    productId: objectIdJoi.objectId().required(),
+    productId: Joi.string().guid({ version: ['uuidv4'] }).required(),
     count: Joi.number().integer().required()
 });
 
