@@ -38,17 +38,17 @@ class CartController {
         }
     }
 
-    // public async chackoutUserCart({ headers, body }: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const userId = headers[USER_ID_HEADER_KEY] as string;
+    public async chackoutUserCart({ headers, body }: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = headers[USER_ID_HEADER_KEY] as string;
 
-    //         const chackoutUserCartResponse = await CartService.chackoutUserCart(userId, body);
+            const chackoutUserCartResponse = await CartService.chackoutUserCart(userId, body);
 
-    //         res.send(new ResponseDTO({ data: chackoutUserCartResponse }));
-    //     } catch (error) {
-    //         return next(error);
-    //     }
-    // }
+            res.send(new ResponseDTO({ data: chackoutUserCartResponse }));
+        } catch (error) {
+            return next(error);
+        }
+    }
 }
 
 export default new CartController();

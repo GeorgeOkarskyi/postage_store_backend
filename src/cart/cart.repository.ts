@@ -7,6 +7,8 @@ import { getCartTotal } from "./cart.utils";
 import { ExpressError } from "../models/error.entity";
 import { DeleteResponce } from "../models/responce.entity"
 import { NO_ITEMS_IN_CART_FOUND_MESSAGE, NO_PRODUCT_FOUND_MESSAGE, NO_CART_FOUND_MESSAGE, ServerResponseCodes } from "../constants"
+import { Delivery, ORDER_STATUS, OrderEntity, Payment } from "../models/order.entity";
+import { Order } from "../database/models/order.entity";
 export class CartDAL {
     private productDAL: ProductDAL;
 
@@ -89,7 +91,7 @@ export class CartDAL {
             throw new ExpressError( {message: NO_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
-        if(!cart.items.length) {
+        if(!cart.items.isEmpty()) {
             throw new ExpressError( {message: NO_ITEMS_IN_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
@@ -100,22 +102,32 @@ export class CartDAL {
         return new DeleteResponce({ success: true });
     }
 
-    // async chackoutUserCart(userId: string, payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS): Promise<OrderEntity>{
-    //     const { id: cartId, items, total } = await this.getUserCart(userId);
+    async chackoutUserCart(userId: string, payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS): Promise<OrderEntity>{
+        const cart = await DI.cart.findOne({ userId: userId, isDeleted: false}, {
+            populate: ['items'],
+        });
 
-    //     const newOrder = new Order({userId, 
-    //         cartId, 
-    //         items: items.map((item) => new CartItem({ cartId: cartId, productId: item.product.id, count: item.count})), 
-    //         payment, 
-    //         delivery, 
-    //         comments, 
-    //         status, 
-    //         total});
+        if(!cart){
+            throw new ExpressError( {message: NO_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
+        }
 
-    //     const newOrderResponse = (await newOrder.save()).toObject();
+        if(!cart.items.isEmpty()) {
+            throw new ExpressError( {message: NO_ITEMS_IN_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
+        }
 
-    //     await this.emptyUserCart(userId);
+        const newOrder = new Order({
+            userId: cart.userId,
+            cartId: cart.id,
+            status,
+            total: cart.total,
+            comments,
+            items: cart.items,
+            payment,
+            delivery
+        });
 
-    //     return new OrderEntity({...newOrderResponse, items, id: newOrderResponse._id as string}) 
-    // }
+        await DI.em.persistAndFlush(newOrder);
+
+        return new OrderEntity({...newOrder, items: newOrder.items.map((item) => new CartItemEntity({...item, cartId: cart.id}))});
+    }
 }
