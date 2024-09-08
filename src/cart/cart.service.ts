@@ -38,6 +38,10 @@ class CartService {
     async chackoutUserCart(userId: string, { payment, delivery, comments, status }: { payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS }): Promise<OrderEntity>{
         const checkoutUserCartResponse = await this.cartDAL.chackoutUserCart(userId, payment, delivery, comments, status);
         
+        if(checkoutUserCartResponse) {
+            await this.cartDAL.emptyUserCart(userId);
+        }
+        
         return checkoutUserCartResponse;
     }
 }
