@@ -63,9 +63,10 @@ export class CartDAL {
         let cartItem = cart?.items.getItems().find((item) => item.product.id === product.productId);
 
         if (cartItem) {
-            cartItem.count += product.count;
+            cartItem.count += Number(product.count);
         } else {
             cartItem = new CartItem(product.count, cart, productItem);
+            
             cart.items.add(cartItem);
         }
 
@@ -91,7 +92,7 @@ export class CartDAL {
             throw new ExpressError( {message: NO_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
-        if(!cart.items.isEmpty()) {
+        if(cart.items.isEmpty()) {
             throw new ExpressError( {message: NO_ITEMS_IN_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
@@ -104,14 +105,14 @@ export class CartDAL {
 
     async chackoutUserCart(userId: string, payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS): Promise<OrderEntity>{
         const cart = await DI.cart.findOne({ userId: userId, isDeleted: false}, {
-            populate: ['items'],
+            populate: ['items.product'],
         });
 
         if(!cart){
             throw new ExpressError( {message: NO_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
-        if(!cart.items.isEmpty()) {
+        if(cart.items.isEmpty()) {
             throw new ExpressError( {message: NO_ITEMS_IN_CART_FOUND_MESSAGE, status: ServerResponseCodes.NotFound});
         }
 
