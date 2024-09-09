@@ -4,6 +4,7 @@ import { Cart } from './models/cart.entity';
 import { Order } from './models/order.entity';
 import { CartItem } from './models/cartItem.entity';
 import http from 'http';
+import { User } from './models/user.entity';
 
 export interface Services {
   server?: http.Server;
@@ -13,6 +14,7 @@ export interface Services {
   cart: EntityRepository<Cart>;
   order: EntityRepository<Order>;
   cartItem: EntityRepository<CartItem>;
+  user: EntityRepository<User>
 };
 
 let cache: Services;
@@ -31,6 +33,7 @@ export async function initORM(options?: Options): Promise<Services> {
     product: orm.em.getRepository(Product),
     cart: orm.em.getRepository(Cart),
     order: orm.em.getRepository(Order),
-    cartItem: orm.em.getRepository(CartItem)
+    cartItem: orm.em.getRepository(CartItem),
+    user: orm.em.getRepository(User)
   };
 }

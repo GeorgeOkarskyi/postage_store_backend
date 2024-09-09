@@ -2,6 +2,7 @@ import { ProductEntity } from './product.entity';
 import { CartEntity } from './cart.entity';
 import { OrderEntity } from './order.entity';
 import { ExpressError } from './error.entity';
+import { UserEntity } from './user.entity';
 
 interface InterfaceDeleteResponce {
   success: boolean;
@@ -15,7 +16,15 @@ export class DeleteResponce {
   }
 }
 
-type ResponseData = Array<ProductEntity> | ProductEntity | CartEntity | OrderEntity | DeleteResponce;
+export class loginResponce {
+  public token: string;
+
+  constructor(token: string) {
+      this.token = token;
+  }
+}
+
+type ResponseData = Array<ProductEntity> | ProductEntity | CartEntity | OrderEntity | DeleteResponce | UserEntity | loginResponce;
 
 interface InterfaceResponseDTO {
     data?: ResponseData,
