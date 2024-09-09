@@ -7,6 +7,7 @@ import { authenticate } from './middlewares/authenticate.middleware';
 import { appRouter } from './app.router';
 import { errorHandler } from './middlewares/errorHandler.middleware'
 import { RequestContext } from '@mikro-orm/core';
+import { authRouter } from './auth/auth.router';
 
 export const app = express();
 const port = process.env.PORT || 3001;
@@ -17,10 +18,10 @@ export const init = (async() => {
     DI = await initORM(config);
 
     app.use(express.json());
-    app.use(authenticate);
     app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
 
-    app.use('/api', appRouter);
+    app.use('/auth', authRouter);
+    app.use('/api', authenticate, appRouter);
 
     app.use(errorHandler);
 
