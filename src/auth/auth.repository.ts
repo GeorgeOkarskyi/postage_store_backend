@@ -16,7 +16,7 @@ export class AuthRepository {
 
         await DI.em.persistAndFlush(newUser);
 
-        return newUser
+        return newUser;
     }
 
     async validatePassword (email: string, password: string): Promise<User | null> {
@@ -30,5 +30,4 @@ export class AuthRepository {
 
         return isPasswordValid ? user : null;
     }
-
 }
