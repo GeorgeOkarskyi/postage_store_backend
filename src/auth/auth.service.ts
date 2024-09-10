@@ -1,7 +1,7 @@
 import { INVALID_EMAIL_OR_PASSWORD_MESSAGE, ServerResponseCodes, USER_ALREADY_EXISTS_MESSAGE } from "../constants";
-import { ExpressError } from "../models/error.entity";
-import { loginResponce } from "../models/responce.entity";
-import { UserEntity, UserRole } from "../models/user.entity";
+import { ExpressError } from "../shared-entities/error.entity";
+import { loginResponce } from "../shared-entities/responce.entity";
+import { UserEntity, UserRole } from "../shared-entities/user.entity";
 import { AuthRepository } from "./auth.repository";
 import * as jwt from 'jsonwebtoken';
 

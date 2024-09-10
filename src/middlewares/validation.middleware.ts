@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ExpressError } from '../models/error.entity';
+import { ExpressError } from '../shared-entities/error.entity';
 import { ServerResponseCodes } from '../constants';
 import { validateBody } from '../joi/joi';
 

@@ -1,5 +1,5 @@
-import { ProductEntity } from '../models/product.entity';
-import { ExpressError } from '../models/error.entity';
+import { ProductEntity } from '../shared-entities/product.entity';
+import { ExpressError } from '../shared-entities/error.entity';
 import { ServerResponseCodes, NO_PRODUCT_FOUND_MESSAGE} from '../constants';
 
 import { DI } from '../server';

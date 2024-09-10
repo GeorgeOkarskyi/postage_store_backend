@@ -1,6 +1,6 @@
 import Joi, { ObjectSchema } from 'joi';
-import { UserRole } from '../models/user.entity';
-import { ORDER_STATUS } from '../models/order.entity';
+import { UserRole } from '../shared-entities/user.entity';
+import { ORDER_STATUS } from '../shared-entities/order.entity';
 
 const passwordPatternRegExp = new RegExp('^[a-zA-Z0-9]{3,30}$');
 const passwordValidationErrorsMessages = {

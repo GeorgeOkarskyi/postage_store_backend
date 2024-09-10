@@ -2,10 +2,10 @@ import { DI } from '../server';
 import { Cart } from '../database/models/cart.entity';
 import { CartItem } from "../database/models/cartItem.entity";
 import { getCartTotal } from "./cart.utils";
-import { ExpressError } from "../models/error.entity";
-import { DeleteResponce } from "../models/responce.entity"
+import { ExpressError } from "../shared-entities/error.entity";
+import { DeleteResponce } from "../shared-entities/responce.entity";
 import { NO_ITEMS_IN_CART_FOUND_MESSAGE, NO_PRODUCT_FOUND_MESSAGE, NO_CART_FOUND_MESSAGE, ServerResponseCodes } from "../constants"
-import { Delivery, ORDER_STATUS, Payment } from "../models/order.entity";
+import { Delivery, ORDER_STATUS, Payment } from "../shared-entities/order.entity";
 import { Order } from "../database/models/order.entity";
 
 export class CartDAL {

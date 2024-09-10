@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import CartService from './cart.service';
-import { ResponseDTO } from '../models/responce.entity';
-import { USER_ID_HEADER_KEY } from '../constants';
+import { ResponseDTO } from '../shared-entities/responce.entity';
 import { ApiRequest } from '../middlewares/authenticate.middleware';
 
 class CartController {

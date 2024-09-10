@@ -1,7 +1,7 @@
 import { PrimaryKey, OneToMany, Property, Collection, Entity } from "@mikro-orm/core";
 import { v4 as uuidv4 } from 'uuid';
 import { CartItem } from './cartItem.entity'
-import { Delivery, ORDER_STATUS, Payment } from "../../models/order.entity";
+import { Delivery, ORDER_STATUS, Payment } from "../../shared-entities/order.entity";
 import { it } from "node:test";
 
 @Entity()

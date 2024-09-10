@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import ProductsService from './products.service';
-import { ResponseDTO } from '../models/responce.entity';
+import { ResponseDTO } from '../shared-entities/responce.entity';
 
 class ProductsController {
     async requestProducts(req: Request, res: Response, next: NextFunction): Promise<void>{

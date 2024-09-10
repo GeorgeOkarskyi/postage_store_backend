@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { ServerResponseCodes, TOKEN_IS_REQUIRED_MESSAGE, USER_IS_NOT_AUTHORIZED_MESSAGE } from '../constants';
-import { ExpressError } from '../models/error.entity';
+import { ExpressError } from '../shared-entities/error.entity';
 import * as jwt from 'jsonwebtoken';
-import { UserEntity } from '../models/user.entity';
+import { UserEntity } from '../shared-entities/user.entity';
 
 const TOKET_TYPE = 'Bearer';
 export interface ApiRequest extends Request {

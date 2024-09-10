@@ -1,8 +1,8 @@
-import { ProductEntity } from './product.entity';
-import { CartEntity } from './cart.entity';
-import { OrderEntity } from './order.entity';
-import { ExpressError } from './error.entity';
-import { UserEntity } from './user.entity';
+import { ProductEntity } from '../shared-entities/product.entity';
+import { CartEntity } from '../shared-entities/cart.entity';
+import { OrderEntity } from '../shared-entities/order.entity';
+import { ExpressError } from '../shared-entities/error.entity';
+import { UserEntity } from '../shared-entities/user.entity';
 
 interface InterfaceDeleteResponce {
   success: boolean;

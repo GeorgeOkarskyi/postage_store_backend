@@ -1,6 +1,6 @@
-import { CartEntity, CartItemEntity } from "../models/cart.entity";
-import { Delivery, ORDER_STATUS, OrderEntity, Payment } from "../models/order.entity";
-import { DeleteResponce } from "../models/responce.entity";
+import { CartEntity, CartItemEntity } from "../shared-entities/cart.entity";
+import { Delivery, ORDER_STATUS, OrderEntity, Payment } from "../shared-entities/order.entity";
+import { DeleteResponce } from "../shared-entities/responce.entity";
 import { CartDAL } from "./cart.repository";
 
 class CartService {

@@ -1,6 +1,6 @@
 import { Entity, PrimaryKey, Property, Enum } from '@mikro-orm/core';
 import { v4 as uuidv4 } from 'uuid';
-import { UserRole } from '../../models/user.entity';
+import { UserRole } from '../../shared-entities/user.entity';
 
 @Entity()
 export class User {

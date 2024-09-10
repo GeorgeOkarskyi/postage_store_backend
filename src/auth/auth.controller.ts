@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import AuthService from './auth.service';
-import { ResponseDTO } from '../models/responce.entity';
+import { ResponseDTO } from '../shared-entities/responce.entity';
 
 class AuthController {
     public async registerUser (req: Request, res: Response, next: NextFunction) {

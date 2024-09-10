@@ -1,4 +1,4 @@
-import { ProductEntity } from "../models/product.entity";
+import { ProductEntity } from "../shared-entities/product.entity";
 import { ProductDAL } from './products.repository';
 
 class ProductsService {

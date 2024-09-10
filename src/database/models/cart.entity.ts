@@ -16,7 +16,7 @@ export class Cart {
     @Property()
     total!: number;
 
-    @OneToMany(() => CartItem, item => item.cart)
+    @OneToMany(() => CartItem, item => item.cart, { orphanRemoval: true })
     items = new Collection<CartItem>(this);
 
     constructor({ userId, isDeleted, total }: { userId: string, isDeleted: boolean, total: number }) {

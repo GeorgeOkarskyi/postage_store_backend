@@ -1,5 +1,5 @@
 import { User } from "../database/models/user.entity";
-import { UserRole } from "../models/user.entity";
+import { UserRole } from "../shared-entities/user.entity";
 import bcrypt from 'bcrypt';
 import { DI } from '../server';
 
