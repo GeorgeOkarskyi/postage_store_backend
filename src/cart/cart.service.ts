@@ -1,32 +1,31 @@
 import { CartEntity, CartItemEntity } from "../models/cart.entity";
 import { Delivery, ORDER_STATUS, OrderEntity, Payment } from "../models/order.entity";
 import { DeleteResponce } from "../models/responce.entity";
-import { ProductDAL } from "../products/products.repository";
 import { CartDAL } from "./cart.repository";
 
 class CartService {
-    private cartDAL: CartDAL
+    private cartDAL: CartDAL;
 
     constructor( cartDAL: CartDAL ) {
-        this.cartDAL = cartDAL
+        this.cartDAL = cartDAL;
     }
 
     async getUserCart(userId: string): Promise<CartEntity> {
-        const userCartResponce = await this.cartDAL.getUserCart(userId);
+        let userCart = await this.cartDAL.requestUserCart(userId);
         
-        if(!userCartResponce) {
-            const createUserCartResponce = this.cartDAL.createUserCart(userId);
-
-            return createUserCartResponce;
+        if(!userCart) {
+            userCart = await this.cartDAL.createUserCart(userId);
         }
 
-        return userCartResponce;
+        return new CartEntity({ ...userCart, items: userCart.items?.getItems()
+            .map((item) => new CartItemEntity({...item, cartId: userCart.id}))});
     }
 
     async updateUserCart(userId: string, product: { productId: string, count: number }): Promise<CartEntity> {
-        const updateUserCartResponce = await this.cartDAL.updateUserCart(userId, product);
-        
-        return updateUserCartResponce
+        const updatedUserCart = await this.cartDAL.updateUserCart(userId, product);
+
+        return new CartEntity({ ...updatedUserCart, items: updatedUserCart.items?.getItems()
+            .map((item) => new CartItemEntity({...item, cartId: updatedUserCart.id}))});
     }
 
     async emptyUserCart(userId: string): Promise<DeleteResponce>{
@@ -35,18 +34,18 @@ class CartService {
         return updateUserCartResponce;
     }
 
-    async chackoutUserCart(userId: string, { payment, delivery, comments, status }: { payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS }): Promise<OrderEntity>{
-        const checkoutUserCartResponse = await this.cartDAL.chackoutUserCart(userId, payment, delivery, comments, status);
+    async chackoutUserCart(userId: string, 
+        { payment, delivery, comments, status }: { payment: Payment, delivery: Delivery, comments: string, status: ORDER_STATUS }): Promise<OrderEntity>{
+        const userOrder = await this.cartDAL.chackoutUserCart(userId, payment, delivery, comments, status);
         
-        if(checkoutUserCartResponse) {
+        if(userOrder) {
             await this.cartDAL.emptyUserCart(userId);
         }
         
-        return checkoutUserCartResponse;
+        return new OrderEntity({...userOrder, items: userOrder.items.map((item) => new CartItemEntity({...item, cartId: userOrder.cartId}))});
     }
 }
 
-const productDAL = new ProductDAL();
-const cartDAL = new CartDAL(productDAL);
+const cartDAL = new CartDAL();
 
 export default new CartService(cartDAL);
