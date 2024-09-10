@@ -1,5 +1,6 @@
 import Joi, { ObjectSchema } from 'joi';
 import { UserRole } from '../models/user.entity';
+import { ORDER_STATUS } from '../models/order.entity';
 
 const passwordPatternRegExp = new RegExp('^[a-zA-Z0-9]{3,30}$');
 const passwordValidationErrorsMessages = {
@@ -25,7 +26,7 @@ const CHECKOUT_USER_CART_REQUEST_SCHEMA = Joi.object({
       address: Joi.any().required(),
     }).required(),
     comments: Joi.string().required(),
-    status: Joi.string().valid('created', 'completed').required(),
+    status: Joi.string().valid(ORDER_STATUS.CREATED, ORDER_STATUS.COMPLETED).required(),
 });
 
 const REGISTER_USER_REQUEST_SCHEMA = Joi.object({

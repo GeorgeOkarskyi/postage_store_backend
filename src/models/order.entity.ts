@@ -1,6 +1,9 @@
 import { CartItemEntity } from './cart.entity';
 
-export type ORDER_STATUS = 'created' | 'completed';
+export enum ORDER_STATUS {
+  CREATED = 'created',
+  COMPLETED = 'completed'
+};
 
 export interface IOrderEntityParams {
   id: string,
