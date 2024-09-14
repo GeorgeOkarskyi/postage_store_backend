@@ -1,4 +1,5 @@
 import express from 'express';
+import morgan from 'morgan';
 import * as dotenv from 'dotenv'
 dotenv.config() 
 import config from './config/orm.config'
@@ -10,10 +11,11 @@ import { RequestContext } from '@mikro-orm/core';
 import { authRouter } from './auth/auth.router';
 import { registerShutdown } from './utils/shutdownHandler';
 import { healthcheckup } from './middlewares/healthcheckup.middleware';
-import { SERVER_STARTED_MESSAGE } from './constants';
+import { PRODUCTION_ENVIRONMENT_NAME, SERVER_STARTED_MESSAGE } from './constants';
 
-export const app = express();
+const app = express();
 const port = process.env.PORT || 3001;
+const isProduction = process.env.ENVIRONMENT === PRODUCTION_ENVIRONMENT_NAME;
 
 export let DI = {} as Services;
 
@@ -21,6 +23,12 @@ export const init = (async() => {
     DI = await initORM(config);
 
     app.use('/health', healthcheckup);
+
+    if (isProduction) {
+        app.use(morgan('tiny'));
+    } else {
+        app.use(morgan('dev'));
+    }
 
     app.use(express.json());
     

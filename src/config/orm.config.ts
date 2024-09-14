@@ -2,6 +2,7 @@ import { Options, defineConfig } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { SeedManager } from '@mikro-orm/seeder';
 import { Migrator } from '@mikro-orm/migrations';
+import { PRODUCTION_ENVIRONMENT_NAME } from '../constants';
 
 const config: Options = defineConfig({
   host: process.env.MIKRO_ORM_HOST,
@@ -20,7 +21,7 @@ const config: Options = defineConfig({
     path: './dist/database/seedings',
   },
   metadataProvider: TsMorphMetadataProvider,
-  debug: true,
+  debug: process.env.ENVIRONMENT !== PRODUCTION_ENVIRONMENT_NAME,
   extensions: [ SeedManager, Migrator ],
 });
 
