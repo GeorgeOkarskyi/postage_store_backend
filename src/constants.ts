@@ -25,3 +25,5 @@ export const NO_CART_FOUND_MESSAGE = 'Cart not found';
 
 export const HEALTH_CHECK_FAILED_MESSAGE = 'Health check failed:';
 export const DB_CONNECTION_FAILED_MESSAGE ='Database connection failed';
+
+export const PRODUCTION_ENVIRONMENT_NAME = 'production';
