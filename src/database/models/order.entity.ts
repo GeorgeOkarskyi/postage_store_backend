@@ -1,8 +1,7 @@
-import { PrimaryKey, OneToMany, Property, Collection, Entity } from "@mikro-orm/core";
+import { PrimaryKey, OneToMany, Property, Collection, Entity, Enum } from "@mikro-orm/core";
 import { v4 as uuidv4 } from 'uuid';
 import { CartItem } from './cartItem.entity'
 import { Delivery, ORDER_STATUS, Payment } from "../../shared-entities/order.entity";
-import { it } from "node:test";
 
 @Entity()
 export class Order {
@@ -18,16 +17,16 @@ export class Order {
     @Property()
     comments!: string;
 
-    @Property()
+    @Enum(() => ORDER_STATUS)
     status!: ORDER_STATUS;
 
     @Property()
     total!: number;
 
-    @Property()
+    @Property({ type: 'json' })
     payment!: Payment;
 
-    @Property()
+    @Property({ type: 'json' })
     delivery!: Delivery;
 
     @OneToMany(() => CartItem, item => item.order, {nullable: true})

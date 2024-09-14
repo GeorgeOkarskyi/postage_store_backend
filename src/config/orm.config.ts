@@ -1,11 +1,14 @@
-import { Options, SqliteDriver } from '@mikro-orm/sqlite';
+import { Options, defineConfig } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { SeedManager } from '@mikro-orm/seeder';
-import { Migrator, TSMigrationGenerator } from '@mikro-orm/migrations';
+import { Migrator } from '@mikro-orm/migrations';
 
-const config: Options = {
-  driver: SqliteDriver,
-  dbName: 'storeDB',
+const config: Options = defineConfig({
+  host: process.env.MIKRO_ORM_HOST,
+  port: Number(process.env.MIKRO_ORM_PORT),
+  user: process.env.MIKRO_ORM_USER,
+  password: process.env.MIKRO_ORM_PASSWORD,
+  dbName: process.env.MIKRO_ORM_DB_NAME,
   entities: ['dist/database/**/*.entity.js'],
   entitiesTs: ['src/database/**/*.entity.ts'],
   migrations: {
@@ -19,6 +22,6 @@ const config: Options = {
   metadataProvider: TsMorphMetadataProvider,
   debug: true,
   extensions: [ SeedManager, Migrator ],
-};
+});
 
 export default config;

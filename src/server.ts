@@ -8,6 +8,7 @@ import { appRouter } from './app.router';
 import { errorHandler } from './middlewares/errorHandler.middleware'
 import { RequestContext } from '@mikro-orm/core';
 import { authRouter } from './auth/auth.router';
+import { registerShutdown } from './utils/shutdownHandler';
 
 export const app = express();
 const port = process.env.PORT || 3001;
@@ -26,6 +27,8 @@ export const init = (async() => {
     app.use(errorHandler);
 
     DI.server = app.listen(port, () => {
-    console.log(`MikroORM express TS example started at http://localhost:${port}`);
+        console.log(`App started at http://localhost:${port}`);
     });
+
+    registerShutdown(DI.server);
 })();
