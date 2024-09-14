@@ -1,4 +1,4 @@
-import { EntityManager, EntityRepository, MikroORM, Options } from '@mikro-orm/core';
+import { EntityManager, EntityRepository, MikroORM, Options } from '@mikro-orm/postgresql';
 import { Product } from './models/product.entity';
 import { Cart } from './models/cart.entity';
 import { Order } from './models/order.entity';
