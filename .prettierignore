@@ -1,6 +1,0 @@
-dist
-.idea
-.vscode
-**/node_modules
-.env
-*snapshot-node_gmp.json
