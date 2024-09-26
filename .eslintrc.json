@@ -1,0 +1,258 @@
+{
+    "parserOptions": {
+      "project": [
+        "tsconfig.json"
+      ],
+      "ecmaVersion": "latest",
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "parser": "@typescript-eslint/parser",
+    "root": true,
+    "env": {
+      "browser": true,
+      "node": true,
+      "es2022": true,
+      "amd": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:prettier/recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:react/recommended"
+    ],
+    "plugins": ["@typescript-eslint", "react", "simple-import-sort"],
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "rules": {
+      "simple-import-sort/imports": [
+        "error",
+        {
+          "groups": [
+            ["^@?\\w", "(^@wk/(.*))$"],
+            ["(@)(Root|Store|Services|Components|Containers|Features|Configs|ClientServer|Utils)(/.*|$)"],
+            ["^\\./?$", "^\\.(?!/?$)", "^\\./(?=.*/)(?!/?$)", "^\\.\\.(?!/?$)", "^\\.\\./?$"],
+            ["\\.(constants|types|helpers|utils|selectors)(/.*|$)"],
+            [".*\\.scss$", "^\\.\\.scss$", ".*\\.css$", "^\\.\\.css$"]
+          ]
+        }
+      ],
+      "comma-dangle": "off",
+      "prettier/prettier": [
+        "warn",
+        {
+          "endOfLine": "auto",
+          "printWidth": 120,
+          "arrowParens": "avoid",
+          "quoteProps": "consistent",
+          "trailingComma": "es5"
+        }
+      ],
+      "no-nested-ternary": "warn",
+      "no-dupe-class-members": "off",
+      "no-undef": "off",
+      "no-array-constructor": "off",
+      "no-use-before-define": "off",
+      "no-unused-vars": "off",
+      "no-useless-constructor": "off",
+      "no-shadow": "off",
+      "no-await-in-loop": "warn",
+      "no-restricted-globals": "warn",
+      "triple-slash-reference": 0,
+      "no-plusplus": "warn",
+      "no-param-reassign": "warn",
+      "class-methods-use-this": "off",
+      "no-void": "warn",
+      "react/prop-types": "off",
+      "react/display-name": "off",
+      "react/jsx-filename-extension": [
+        1,
+        {
+          "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        }
+      ],
+      "jsx-quotes": ["error", "prefer-double"],
+      "no-restricted-syntax": "warn",
+      "no-continue": "warn",
+      "no-prototype-builtins": "warn",
+      "operator-assignment": "warn",
+      "no-underscore-dangle": "off",
+      "lines-between-class-members": "off",
+      "prefer-object-spread": "warn",
+      "max-classes-per-file": "warn",
+      "global-require": "warn",
+      "spaced-comment": "warn",
+      "function-paren-newline": "off",
+      "prefer-regex-literals": "warn",
+      "quote-props": ["error", "consistent"],
+      "no-useless-escape": "warn",
+      "no-self-compare": "warn",
+      "space-infix-ops": "warn",
+      "no-template-curly-in-string": "warn",
+      "linebreak-style": "off",
+      "dot-notation": "off",
+      "strict": "off",
+      "object-curly-newline": "off",
+      "no-unused-expressions": "off",
+      "arrow-body-style": ["warn", "as-needed"],
+      "arrow-parens": ["error", "as-needed"],
+      "arrow-spacing": ["error"],
+      "no-var": "error",
+      "object-curly-spacing": ["error", "always"],
+      "array-bracket-spacing": ["off"],
+      "block-spacing": ["error", "always"],
+      "camelcase": [
+        "error",
+        {
+          "properties": "never",
+          "allow": ["child_process"]
+        }
+      ],
+      "space-before-function-paren": "off",
+      "space-in-parens": [
+        "off",
+        "never",
+        {
+          "exceptions": ["()"]
+        }
+      ],
+      "padding-line-between-statements": [
+        "warn",
+        {
+          "blankLine": "always",
+          "prev": "directive",
+          "next": "*"
+        },
+        {
+          "blankLine": "any",
+          "prev": "directive",
+          "next": "directive"
+        },
+        {
+          "blankLine": "always",
+          "prev": "import",
+          "next": "*"
+        },
+        {
+          "blankLine": "any",
+          "prev": "import",
+          "next": "import"
+        },
+        {
+          "blankLine": "always",
+          "prev": "*",
+          "next": ["const", "let", "var", "export"]
+        },
+        {
+          "blankLine": "always",
+          "prev": ["const", "let", "var", "export"],
+          "next": "*"
+        },
+        {
+          "blankLine": "any",
+          "prev": ["const", "let", "var", "export"],
+          "next": ["const", "let", "var", "export"]
+        },
+        {
+          "blankLine": "always",
+          "prev": "*",
+          "next": ["if", "class", "for", "do", "while", "switch", "try"]
+        },
+        {
+          "blankLine": "always",
+          "prev": ["if", "class", "for", "do", "while", "switch", "try"],
+          "next": "*"
+        },
+        {
+          "blankLine": "always",
+          "prev": "*",
+          "next": "return"
+        }
+      ],
+      "max-len": "off"
+    },
+    "globals": {
+      "csn": "readonly",
+      "_": "readonly",
+      "osa": "readonly",
+      "velvet": "readonly",
+      "angular": "readonly",
+      "Promise": "readonly",
+      "bmb": "readonly",
+      "wk": "readonly",
+      "$": "readonly",
+      "bowser": "readonly",
+      "odata": "readonly",
+      "moment": "readonly",
+      "wkVars": "readonly",
+      "Set": "readonly",
+      "JSX": "readonly",
+      "React": "readonly",
+      "NodeJS": "readonly"
+    },
+    "overrides": [
+      {
+        "files": ["*.js"],
+        "parser": "esprima",
+        "rules": {
+          "@typescript-eslint/no-var-requires": "warn"
+        }
+      },
+      {
+        "files": ["*.ts", "*.tsx"],
+        "rules": {
+          "@typescript-eslint/dot-notation": "error",
+          "@typescript-eslint/consistent-type-assertions": "warn",
+          "@typescript-eslint/no-array-constructor": "warn",
+          "@typescript-eslint/no-namespace": "error",
+          "@typescript-eslint/no-use-before-define": "off",
+          "@typescript-eslint/no-unused-vars": [
+            "warn",
+            {
+              "args": "after-used",
+              "argsIgnorePattern": "^_",
+              "ignoreRestSiblings": true,
+              "vars": "all",
+              "varsIgnorePattern": "^_"
+            }
+          ],
+          "@typescript-eslint/no-unused-expressions": [
+            "error",
+            {
+              "allowShortCircuit": true,
+              "allowTernary": true,
+              "allowTaggedTemplates": true
+            }
+          ],
+          "@typescript-eslint/no-useless-constructor": "warn",
+          "@typescript-eslint/prefer-literal-enum-member": "error",
+          "@typescript-eslint/prefer-namespace-keyword": "error",
+          "@typescript-eslint/no-shadow": "warn",
+          "@typescript-eslint/no-explicit-any": "warn",
+          "@typescript-eslint/no-empty-interface": 2,
+          "@typescript-eslint/no-var-requires": "warn"
+        }
+      },
+      {
+        "files": ["*.test.tsx", "*.spec.tsx", "*.spec.ts", "*.test.ts"],
+        "env": {
+          "jest": true
+        },
+        "rules": {
+          "@typescript-eslint/no-var-requires": "warn"
+        }
+      },
+      {
+        "files": ["shared/src/**"],
+        "rules": {
+          "@typescript-eslint/no-unused-vars": "warn"
+        }
+      }
+    ]
+  }
+  
