@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node dist/server",
-    "start:dev": "tsc-watch --onSuccess \"node dist/server\"",
+    "start:dev": "cross-env ENVIRONMENT=development tsc-watch --onSuccess \"node dist/server\"",
+    "start:prod": "cross-env ENVIRONMENT=production tsc-watch --onSuccess \"node dist/server\"",
     "migration:create": "npx mikro-orm migration:create",
     "container:start": "podman-compose up -d",
     "migration:up": "npx mikro-orm migration:up",
