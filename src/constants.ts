@@ -7,7 +7,7 @@ export const enum ServerResponseCodes  {
     BadRequest = 400,
     MethodNotAllowed = 405,
     Conflict = 409
-};
+}
 
 export const SERVER_STARTED_MESSAGE = 'Server is started at:';
 export const BAD_REQUEST_MESSAGE = 'Bad request';
@@ -24,6 +24,6 @@ export const NO_ITEMS_IN_CART_FOUND_MESSAGE = 'No items in the cart were found';
 export const NO_CART_FOUND_MESSAGE = 'Cart not found';
 
 export const HEALTH_CHECK_FAILED_MESSAGE = 'Health check failed:';
-export const DB_CONNECTION_FAILED_MESSAGE ='Database connection failed';
+export const DB_CONNECTION_FAILED_MESSAGE = 'Database connection failed';
 
 export const PRODUCTION_ENVIRONMENT_NAME = 'production';

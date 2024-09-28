@@ -1,9 +1,11 @@
-import { CartItemEntity } from './cart.entity';
+import { CartItemEntity } from './cart-item.entity';
+import { Delivery } from './delivery.entity';
+import { Payment } from './payment.entity';
 
 export enum ORDER_STATUS {
   CREATED = 'created',
   COMPLETED = 'completed'
-};
+}
 
 export interface IOrderEntityParams {
   id: string,
@@ -17,37 +19,6 @@ export interface IOrderEntityParams {
   total: number;
 }
 
-interface IDeliveryParams {
-  type: string,
-  address: any,
-}
-export class Delivery {
-  public type: string;
-  public address: any;
-
-  constructor({type, address}: IDeliveryParams) {
-    this.type = type;
-    this.address = address;
-  }
-}
-interface IPaymentParams {
-  type: string,
-  address?: any,
-  creditCard?: any,
-}
-
-export class Payment {
-  public type: string;
-  public address?: any;
-  public creditCard?: any;
-
-  constructor({type, address, creditCard}: IPaymentParams) {
-    this.type = type;
-    this.address = address;
-    this.creditCard = creditCard;
-  }
-}
-
 export class OrderEntity {
   public id: string;
   public userId: string;
@@ -59,7 +30,7 @@ export class OrderEntity {
   public status: ORDER_STATUS;
   public total: number;
 
-  constructor({id, userId, cartId, items, payment, delivery, comments, status, total}: IOrderEntityParams) {
+  constructor ({ id, userId, cartId, items, payment, delivery, comments, status, total }: IOrderEntityParams) {
     this.id = id;
     this.userId = userId;
     this.cartId = cartId;

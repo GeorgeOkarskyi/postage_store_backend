@@ -1,6 +1,6 @@
-import { Router } from 'express';
 import CartController from './cart.controller';
-import { validatRequestBody } from '../middlewares/validation.middleware'
+import { Router } from 'express';
+import { validatRequestBody } from '../middlewares/validation.middleware';
 
 export const cartRouter = Router();
 

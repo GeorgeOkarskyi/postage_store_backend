@@ -1,24 +1,24 @@
-import { ProductEntity } from "../shared-entities/product.entity";
 import { ProductDAL } from './products.repository';
+import { ProductEntity } from '../shared-entities/product.entity';
 
 class ProductsService {
-    private productDAL: ProductDAL
+  private productDAL: ProductDAL;
 
-    constructor( productDAL: ProductDAL ) {
-        this.productDAL = productDAL;
-    }
+  constructor ( productDAL: ProductDAL ) {
+    this.productDAL = productDAL;
+  }
 
-    async getProducts(): Promise<ProductEntity[]> {
-        const productsResponse = await this.productDAL.getProducts();
+  async getProducts (): Promise<ProductEntity[]> {
+    const productsResponse = await this.productDAL.getProducts();
 
-        return productsResponse;
-    }
+    return productsResponse;
+  }
 
-    async getProduct(productId: string): Promise<ProductEntity> {
-        const productResponse = await this.productDAL.getProduct(productId);
-        
-        return productResponse;
-    }
+  async getProduct (productId: string): Promise<ProductEntity> {
+    const productResponse = await this.productDAL.getProduct(productId);
+
+    return productResponse;
+  }
 }
 
 
