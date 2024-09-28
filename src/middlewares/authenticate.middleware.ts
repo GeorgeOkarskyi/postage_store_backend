@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { NextFunction, Request, Response } from 'express';
 import { ServerResponseCodes, TOKEN_IS_REQUIRED_MESSAGE, USER_IS_NOT_AUTHORIZED_MESSAGE } from '../constants';
 import { ExpressError } from '../shared-entities/error.entity';
-import * as jwt from 'jsonwebtoken';
 import { UserEntity } from '../shared-entities/user.entity';
 
 const TOKET_TYPE = 'Bearer';
@@ -10,26 +10,31 @@ export interface ApiRequest extends Request {
 }
 
 export const authenticate = (req: ApiRequest, res: Response, next: NextFunction) => {
-    
-    const authHeader = req.headers.authorization;
-    
-    if(!authHeader){
-        return next(new ExpressError({ message: TOKEN_IS_REQUIRED_MESSAGE, status: ServerResponseCodes.Unauthorized}));
-    }
+  const authHeader = req.headers.authorization;
 
-    const [tokenType, token] = authHeader.split(' ');
+  if (!authHeader) {
+    return next(new ExpressError({ message: TOKEN_IS_REQUIRED_MESSAGE, status: ServerResponseCodes.Unauthorized }));
+  }
 
-    if (tokenType !== TOKET_TYPE) {
-        return next(new ExpressError({ message: USER_IS_NOT_AUTHORIZED_MESSAGE, status: ServerResponseCodes.Unauthorized}));
-    }
+  const [tokenType, token] = authHeader.split(' ');
 
-    try {
-        const user = jwt.verify(token, process.env.TOKEN_KEY!) as UserEntity;
+  if (tokenType !== TOKET_TYPE) {
+    return next(new ExpressError({
+      message: USER_IS_NOT_AUTHORIZED_MESSAGE,
+      status: ServerResponseCodes.Unauthorized,
+    }));
+  }
 
-        req.user = user;
-    } catch (err) {
-        return next(new ExpressError({ message: USER_IS_NOT_AUTHORIZED_MESSAGE, status: ServerResponseCodes.Unauthorized}));
-    }
+  try {
+    const user = jwt.verify(token, process.env.TOKEN_KEY!) as UserEntity;
 
-    return next();
-}
+    req.user = user;
+  } catch (err) {
+    return next(new ExpressError({
+      message: USER_IS_NOT_AUTHORIZED_MESSAGE + err,
+      status: ServerResponseCodes.Unauthorized,
+    }));
+  }
+
+  return next();
+};

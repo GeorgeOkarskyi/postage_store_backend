@@ -1,10 +1,10 @@
 import { EntityManager, EntityRepository, MikroORM, Options } from '@mikro-orm/postgresql';
-import { Product } from './models/product.entity';
 import { Cart } from './models/cart.entity';
-import { Order } from './models/order.entity';
 import { CartItem } from './models/cartItem.entity';
-import http from 'http';
+import { Order } from './models/order.entity';
+import { Product } from './models/product.entity';
 import { User } from './models/user.entity';
+import http from 'http';
 
 export interface Services {
   server?: http.Server;
@@ -15,11 +15,11 @@ export interface Services {
   order: EntityRepository<Order>;
   cartItem: EntityRepository<CartItem>;
   user: EntityRepository<User>
-};
+}
 
 let cache: Services;
 
-export async function initORM(options?: Options): Promise<Services> {
+export async function initORM (options?: Options): Promise<Services> {
   if (cache) {
     return cache;
   }
@@ -34,6 +34,6 @@ export async function initORM(options?: Options): Promise<Services> {
     cart: orm.em.getRepository(Cart),
     order: orm.em.getRepository(Order),
     cartItem: orm.em.getRepository(CartItem),
-    user: orm.em.getRepository(User)
+    user: orm.em.getRepository(User),
   };
 }
