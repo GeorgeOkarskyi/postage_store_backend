@@ -16,7 +16,6 @@ export const LOG_MESSAGE_INVALID_EMAIL_PASSWORD_ERROR = INVALID_EMAIL_OR_PASSWOR
 
 export const LOG_MESSAGE_FIND_USER_BY_EMAIL_START = 'Attempting to find user by email';
 export const LOG_MESSAGE_FIND_USER_BY_EMAIL_END = 'Find user by email completed successfuly';
-export const LOG_MESSAGE_FIND_USER_BY_EMAIL_ERROR = 'Error to find a user';
 
 export const LOG_MESSAGE_CREATE_USER_START = 'Attempting to create user';
 export const LOG_MESSAGE_CREATE_USER_END = 'User was created successfuly';

@@ -27,7 +27,7 @@ export class ProductDAL {
     logger.debug(LOG_MESSAGE_REQUEST_PRODUCT_START, { productId, serviceLavel:  ServiceLevel.REPOSITORY });
 
     const productResponce = await DI.product.findOneOrFail({ id: productId }, { failHandler: () => {
-      logger.info(LOG_MESSAGE_REQUEST_PRODUCT_ERROR, { productId, serviceLavel:  ServiceLevel.REPOSITORY });
+      logger.error(LOG_MESSAGE_REQUEST_PRODUCT_ERROR, { productId, serviceLavel:  ServiceLevel.REPOSITORY });
 
       throw new ExpressError({ message: NO_PRODUCT_FOUND_MESSAGE, status: ServerResponseCodes.NotFound });
     } });
