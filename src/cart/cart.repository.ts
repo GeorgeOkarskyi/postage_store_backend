@@ -19,6 +19,7 @@ import {
   LOG_MESSAGE_DB_UPDATE_USER_CART_REQUEST_START,
   NO_CART_FOUND_MESSAGE,
   NO_ITEMS_IN_CART_FOUND_MESSAGE,
+  POPULATE_USER_CART_OPTION_VALUE,
 } from './cart.constants';
 import {
   NO_PRODUCT_FOUND_MESSAGE,
@@ -44,7 +45,7 @@ export class CartDAL {
     const userCart = DI.cart.findOne(
       { userId: userId, isDeleted: false },
       {
-        populate: ['items.product'],
+        populate: [POPULATE_USER_CART_OPTION_VALUE],
       },
     );
 

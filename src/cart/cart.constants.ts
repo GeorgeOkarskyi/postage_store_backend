@@ -1,3 +1,5 @@
+export const POPULATE_USER_CART_OPTION_VALUE = 'items.product';
+
 export const NO_ITEMS_IN_CART_FOUND_MESSAGE = 'No items in the cart were found';
 export const NO_CART_FOUND_MESSAGE = 'Cart not found';
 
