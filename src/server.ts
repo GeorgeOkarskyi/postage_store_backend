@@ -12,6 +12,7 @@ import config from './config/orm.config';
 import { errorHandler } from './middlewares/errorHandler.middleware';
 import express from 'express';
 import { healthcheckup } from './middlewares/healthcheckup.middleware';
+import logger from './utils/logger';
 import morgan from 'morgan';
 import { registerShutdown } from './utils/shutdownHandler';
 
@@ -28,9 +29,17 @@ export const init = (async () => {
   app.use('/health', healthcheckup);
 
   if (isProduction) {
-    app.use(morgan('tiny'));
+    app.use(morgan('combined', {
+      stream: {
+        write: message => logger.info(message.trim()),
+      },
+    }));
   } else {
-    app.use(morgan('dev'));
+    app.use(morgan('dev', {
+      stream: {
+        write: message => logger.debug(message.trim()),
+      },
+    }));
   }
 
   app.use(express.json());
@@ -43,7 +52,7 @@ export const init = (async () => {
   app.use(errorHandler);
 
   DI.server = app.listen(port, () => {
-    console.log(`${SERVER_STARTED_MESSAGE} http://localhost:${port}`);
+    logger.info(`${SERVER_STARTED_MESSAGE} http://localhost:${port}`);
   });
 
   registerShutdown(DI.server);

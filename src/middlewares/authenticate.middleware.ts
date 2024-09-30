@@ -1,8 +1,8 @@
-import * as jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 import { ServerResponseCodes, TOKEN_IS_REQUIRED_MESSAGE, USER_IS_NOT_AUTHORIZED_MESSAGE } from '../constants';
 import { ExpressError } from '../shared-entities/error.entity';
 import { UserEntity } from '../shared-entities/user.entity';
+import { verifyToken } from '../auth/auth.utils';
 
 const TOKET_TYPE = 'Bearer';
 export interface ApiRequest extends Request {
@@ -26,7 +26,7 @@ export const authenticate = (req: ApiRequest, res: Response, next: NextFunction)
   }
 
   try {
-    const user = jwt.verify(token, process.env.TOKEN_KEY!) as UserEntity;
+    const user = verifyToken(token) as UserEntity;
 
     req.user = user;
   } catch (err) {
