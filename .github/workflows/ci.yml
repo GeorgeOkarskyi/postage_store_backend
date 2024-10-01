@@ -1,0 +1,51 @@
+name: Node.js CI/CD to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main  # This specifies the branch to trigger the pipeline
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test  # You can skip this step if you don't have tests yet
+
+    - name: Build the Docker image
+      run: |
+        docker build -t my-node-app .
+
+    - name: Push Docker image to AWS ECR
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        # Log in to AWS ECR
+        aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URI }}
+        
+        # Tag the Docker image
+        docker tag my-node-app:latest ${{ secrets.AWS_ECR_URI }}/my-node-app:latest
+        
+        # Push the Docker image to ECR
+        docker push ${{ secrets.AWS_ECR_URI }}/my-node-app:latest
+
+    - name: Deploy to Elastic Beanstalk
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws elasticbeanstalk create-application-version --application-name my-node-app --version-label $GITHUB_SHA --source-bundle S3Bucket=$BUCKET_NAME,S3Key=app.zip
+        aws elasticbeanstalk update-environment --application-name my-node-app --environment-name my-node-app-env --version-label $GITHUB_SHA
