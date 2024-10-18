@@ -1,7 +1,7 @@
 version: '3'
 services:
   postgres-db:
-    image: "postgres:12"
+    image: "docker.io/library/postgres:12"
     container_name: "node-gmp-db"
     environment:
       - POSTGRES_USER=${MIKRO_ORM_USER}
