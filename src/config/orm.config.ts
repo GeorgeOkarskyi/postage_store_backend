@@ -12,7 +12,7 @@ const config: Options = defineConfig({
   dbName: process.env.MIKRO_ORM_DB_NAME,
   driverOptions: {
     connection: {
-      ssl: { rejectUnauthorized: true },
+      ssl: { rejectUnauthorized: false },
       sslmode: 'require',
     },
   },
