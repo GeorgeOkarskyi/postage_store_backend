@@ -13,7 +13,6 @@ const config: Options = defineConfig({
   driverOptions: {
     connection: {
       ssl: { rejectUnauthorized: false },
-      sslmode: 'require',
     },
   },
   entities: ['dist/database/**/*.entity.js'],
