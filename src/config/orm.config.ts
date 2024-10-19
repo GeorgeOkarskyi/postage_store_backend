@@ -12,9 +12,7 @@ const config: Options = defineConfig({
   dbName: process.env.MIKRO_ORM_DB_NAME,
   driverOptions: {
     connection: {
-      ssl: process.env.ENVIRONMENT === PRODUCTION_ENVIRONMENT_NAME
-        ? { rejectUnauthorized: false }
-        : false,
+      ssl: { rejectUnauthorized: false },
     },
   },
   entities: ['dist/database/**/*.entity.js'],
