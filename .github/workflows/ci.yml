@@ -32,8 +32,13 @@ jobs:
           git pull origin main
 
           # Create or update the .env file
-          echo "DATABASE_URL=your_database_url" > .env
-          echo "OTHER_ENV_VARIABLE=value" >> .env
+          echo "MIKRO_ORM_DB_NAME=${{ secrets.MIKRO_ORM_DB_NAME }}" > .env
+          echo "MIKRO_ORM_USER=${{ secrets.MIKRO_ORM_USER }}" >> .env
+          echo "MIKRO_ORM_PASSWORD=${{ secrets.MIKRO_ORM_PASSWORD }}" >> .env
+          echo "MIKRO_ORM_HOST=${{ secrets.MIKRO_ORM_HOST }}" >> .env
+          echo "MIKRO_ORM_PORT=${{ secrets.MIKRO_ORM_PORT }}" >> .env
+          echo "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" >> .env
+          echo "TOKEN_KEY=${{ secrets.TOKEN_KEY }}" >> .env
 
           # Install dependencies
           npm install
