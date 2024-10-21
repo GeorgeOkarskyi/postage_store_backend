@@ -43,11 +43,17 @@ jobs:
           # Install dependencies
           npm install
 
+          # Create Migrations
+          npm run migration:create
+
+          # Up migrations
+          npm run migration:up
+
           # Start the application using PM2 or nohup so it runs in the background and doesn't block the SSH session
           if ! [ -x "$(command -v pm2)" ]; then
             sudo npm install pm2 -g
           fi
 
           # Start or restart the application with PM2 (background process manager)
-          pm2 start npm --name "my-app" -- run start || pm2 restart "my-app"
+          pm2 restart "my-app" --name "my-app" -- run start
         EOF
