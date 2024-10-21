@@ -13,7 +13,10 @@ const config: Options = defineConfig({
   driverOptions: {
     connection: {
       ssl: process.env.ENVIRONMENT === PRODUCTION_ENVIRONMENT_NAME
-        ? { rejectUnauthorized: false }
+        ? {
+          rejectUnauthorized: false ,
+          key: process.env.KEY_PAIR_CERTIFICATE,
+        }
         : false,
     },
   },
