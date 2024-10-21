@@ -4,8 +4,6 @@ import { PRODUCTION_ENVIRONMENT_NAME } from '../constants';
 import { SeedManager } from '@mikro-orm/seeder';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 
-const privateKey = process.env.KEY_PAIR_CERTIFICATE?.replace(/\\n/g, '\n');
-
 const config: Options = defineConfig({
   host: process.env.MIKRO_ORM_HOST,
   port: Number(process.env.MIKRO_ORM_PORT),
@@ -15,10 +13,7 @@ const config: Options = defineConfig({
   driverOptions: {
     connection: {
       ssl: process.env.ENVIRONMENT === PRODUCTION_ENVIRONMENT_NAME
-        ? {
-          rejectUnauthorized: true,
-          key: privateKey,
-        }
+        ? { rejectUnauthorized: false }
         : false,
     },
   },
