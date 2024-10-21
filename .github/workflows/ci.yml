@@ -1,51 +1,43 @@
-name: Node.js CI/CD to AWS Elastic Beanstalk
+name: Deploy to EC2
 
 on:
   push:
     branches:
-      - main  # This specifies the branch to trigger the pipeline
+      - main  # Trigger on push to main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout the code
-      uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - name: Install SSH Key
+      uses: webfactory/ssh-agent@v0.5.3
       with:
-        node-version: '16'
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Run tests
-      run: npm test  # You can skip this step if you don't have tests yet
-
-    - name: Build the Docker image
+    - name: Deploy to EC2 instance
       run: |
-        docker build -t my-node-app .
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          # Navigate to the application directory, or clone the repository if it doesn't exist
+          if [ ! -d "/home/${{ secrets.EC2_USER }}/my-app" ]; then
+            git clone https://github.com/GeorgeOkarskyi/postage_store_backend.git /home/${{ secrets.EC2_USER }}/my-app
+          fi
+          cd /home/${{ secrets.EC2_USER }}/my-app
 
-    - name: Push Docker image to AWS ECR
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        # Log in to AWS ECR
-        aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URI }}
-        
-        # Tag the Docker image
-        docker tag my-node-app:latest ${{ secrets.AWS_ECR_URI }}/my-node-app:latest
-        
-        # Push the Docker image to ECR
-        docker push ${{ secrets.AWS_ECR_URI }}/my-node-app:latest
+          # Pull the latest changes from the main branch
+          git checkout main
+          git pull origin main
 
-    - name: Deploy to Elastic Beanstalk
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        aws elasticbeanstalk create-application-version --application-name my-node-app --version-label $GITHUB_SHA --source-bundle S3Bucket=$BUCKET_NAME,S3Key=app.zip
-        aws elasticbeanstalk update-environment --application-name my-node-app --environment-name my-node-app-env --version-label $GITHUB_SHA
+          # Create or update the .env file
+          echo "DATABASE_URL=your_database_url" > .env
+          echo "OTHER_ENV_VARIABLE=value" >> .env
+
+          # Install dependencies
+          npm install
+
+          # Start the application (you can adjust this if using a process manager like PM2)
+          npm run start
+        EOF

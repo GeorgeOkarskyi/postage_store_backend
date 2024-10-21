@@ -10,6 +10,13 @@ const config: Options = defineConfig({
   user: process.env.MIKRO_ORM_USER,
   password: process.env.MIKRO_ORM_PASSWORD,
   dbName: process.env.MIKRO_ORM_DB_NAME,
+  driverOptions: {
+    connection: {
+      ssl: process.env.ENVIRONMENT === PRODUCTION_ENVIRONMENT_NAME
+        ? { rejectUnauthorized: false }
+        : false,
+    },
+  },
   entities: ['dist/database/**/*.entity.js'],
   entitiesTs: ['src/database/**/*.entity.ts'],
   migrations: {
