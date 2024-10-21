@@ -16,7 +16,7 @@ const config: Options = defineConfig({
     connection: {
       ssl: process.env.ENVIRONMENT === PRODUCTION_ENVIRONMENT_NAME
         ? {
-          rejectUnauthorized: false ,
+          rejectUnauthorized: true,
           key: privateKey,
         }
         : false,
