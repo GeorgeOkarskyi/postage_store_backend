@@ -44,10 +44,10 @@ jobs:
           npm install
 
           # Create Migrations
-          npm run migration:create
+          ENVIRONMENT=production npm run migration:create
 
           # Up migrations
-          npm run migration:up
+          ENVIRONMENT=production npm run migration:up
 
           # Start the application using PM2 or nohup so it runs in the background and doesn't block the SSH session
           if ! [ -x "$(command -v pm2)" ]; then
