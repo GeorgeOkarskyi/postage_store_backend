@@ -56,4 +56,7 @@ jobs:
 
           # Start or restart the application with PM2 (background process manager)
           pm2 restart "my-app" --name "my-app" -- run start
+
+          # Set Timer to stop application with sleep
+          sleep 1h && pm2 stop "my-app" &
         EOF
