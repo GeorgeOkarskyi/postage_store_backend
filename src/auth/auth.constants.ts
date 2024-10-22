@@ -1,7 +1,7 @@
 export const EXPIRES_IN_VALUE = '2h';
 
 export const USER_ALREADY_EXISTS_MESSAGE = 'User already exists';
-export const INVALID_EMAIL_OR_PASSWORD_MESSAGE = 'Invalid email or password';
+export const INVALID_EMAIL_OR_PASSWORD_MESSAGE = 'Invalid email or passwor';
 
 export const LOG_MESSAGE_REGISTER_START = 'Attempting to register user';
 export const LOG_MESSAGE_REGISTER_END = 'User registration successful';
